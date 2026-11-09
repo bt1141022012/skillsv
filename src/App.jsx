@@ -143,6 +143,7 @@ const navigation = [
   ['Nosotros', '#nosotros'],
   ['Cómo funciona', '#como-funciona'],
   ['Cursos', '#cursos'],
+  ['Mis cursos', '#mis-cursos'],
   ['Preguntas frecuentes', '#preguntas'],
   ['Contacto', '#contacto'],
 ]
@@ -159,6 +160,10 @@ function App() {
   const [lastOrder, setLastOrder] = useState(() =>
     readSavedValue('skillsv:last-order', null),
   )
+  const [purchases, setPurchases] = useState(() => {
+    const savedPurchases = readSavedValue('skillsv:purchases', [])
+    return Array.isArray(savedPurchases) ? savedPurchases : []
+  })
   const [courseDetailState, setCourseDetailState] = useState(null)
 
   useEffect(() => {
@@ -168,6 +173,10 @@ function App() {
   useEffect(() => {
     saveValue('skillsv:last-order', lastOrder)
   }, [lastOrder])
+
+  useEffect(() => {
+    saveValue('skillsv:purchases', purchases)
+  }, [purchases])
 
   const cartItems = cart
     .map((item) => ({
@@ -180,6 +189,13 @@ function App() {
     (total, item) => total + item.course.price * item.quantity,
     0,
   )
+  const myCourses = purchases
+    .filter((purchase) => purchase.studentId === authUser?.id)
+    .map((purchase) => ({
+      purchase,
+      course: courses.find((course) => course.id === purchase.courseId),
+    }))
+    .filter((item) => item.course)
 
   function closeMenu() {
     setMenuOpen(false)
@@ -248,9 +264,10 @@ function App() {
   function completeCheckout({ paymentMethod }) {
     if (!authUser) return null
 
+    const createdAt = new Date().toISOString()
     const order = {
       id: `SK-${Date.now().toString(36).toUpperCase()}`,
-      createdAt: new Date().toISOString(),
+      createdAt,
       studentId: authUser.id,
       customerName: authUser.name,
       customerEmail: authUser.email,
@@ -266,7 +283,22 @@ function App() {
       total: cartTotal,
     }
 
+    const newPurchases = order.items.map((item) => ({
+      id: `${order.id}:${item.courseId}`,
+      orderId: order.id,
+      studentId: authUser.id,
+      courseId: item.courseId,
+      quantity: item.quantity,
+      purchasedAt: createdAt,
+      paid: item.lineTotal,
+      status: 'Inscrito',
+    }))
+
     setLastOrder(order)
+    setPurchases((currentPurchases) => [
+      ...newPurchases,
+      ...currentPurchases,
+    ])
     setCart([])
     return order
   }
@@ -483,6 +515,75 @@ function App() {
               </article>
             ))}
           </div>
+        </section>
+
+        <section
+          aria-labelledby="my-courses-title"
+          className="container my-courses-section"
+          id="mis-cursos"
+        >
+          <div className="section-header">
+            <span className="kicker">Área de aprendizaje</span>
+            <h2 id="my-courses-title">Mis cursos</h2>
+          </div>
+          {!authUser ? (
+            <div className="my-courses-empty">
+              <p>Inicia sesión para consultar los cursos que has comprado.</p>
+              <button
+                className="btn"
+                onClick={() => setAuthOpen(true)}
+                type="button"
+              >
+                Ingresar como alumno
+              </button>
+            </div>
+          ) : myCourses.length === 0 ? (
+            <div className="my-courses-empty">
+              <p>Aún no tienes cursos comprados.</p>
+              <a className="btn" href="#cursos">
+                Explorar cursos
+              </a>
+            </div>
+          ) : (
+            <div className="my-courses-grid">
+              {myCourses.map(({ course, purchase }) => (
+                <article className="my-course-item" key={purchase.id}>
+                  <img
+                    alt={course.imageAlt}
+                    className="my-course-image"
+                    decoding="async"
+                    loading="lazy"
+                    src={course.image}
+                  />
+                  <div className="my-course-content">
+                    <span className="course-tag">{course.category}</span>
+                    <h3>{course.title}</h3>
+                    <p>
+                      Pedido {purchase.orderId} ·{' '}
+                      {new Intl.DateTimeFormat('es-SV', {
+                        dateStyle: 'medium',
+                      }).format(new Date(purchase.purchasedAt))}
+                    </p>
+                    {purchase.quantity > 1 && (
+                      <p>{purchase.quantity} inscripciones</p>
+                    )}
+                    <div className="my-course-footer">
+                      <span className="enrollment-status">
+                        {purchase.status}
+                      </span>
+                      <button
+                        className="details-link"
+                        onClick={() => openCourseDetails(course)}
+                        type="button"
+                      >
+                        Ver temario <span aria-hidden="true">→</span>
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
         </section>
 
         <section
