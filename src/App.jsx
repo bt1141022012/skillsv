@@ -139,8 +139,8 @@ const questions = [
 const navigation = [
   ['Inicio', '#inicio'],
   ['Nosotros', '#nosotros'],
-  ['Cursos', '#cursos'],
   ['Cómo funciona', '#como-funciona'],
+  ['Cursos', '#cursos'],
   ['Preguntas frecuentes', '#preguntas'],
   ['Contacto', '#contacto'],
 ]
@@ -378,6 +378,25 @@ function App() {
         </section>
 
         <section
+          aria-labelledby="steps-title"
+          className="container how-section"
+          id="como-funciona"
+        >
+          <div className="section-header">
+            <span className="kicker">Inscripción</span>
+            <h2 id="steps-title">Cómo funciona</h2>
+          </div>
+          <div className="steps-grid">
+            {steps.map((step) => (
+              <article className="step-card" key={step.title}>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section
           aria-labelledby="courses-title"
           className="container courses-section"
           id="cursos"
@@ -427,25 +446,6 @@ function App() {
                       </button>
                     </div>
                 </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section
-          aria-labelledby="steps-title"
-          className="container how-section"
-          id="como-funciona"
-        >
-          <div className="section-header">
-            <span className="kicker">Inscripción</span>
-            <h2 id="steps-title">Cómo funciona</h2>
-          </div>
-          <div className="steps-grid">
-            {steps.map((step) => (
-              <article className="step-card" key={step.title}>
-                <h3>{step.title}</h3>
-                <p>{step.description}</p>
               </article>
             ))}
           </div>
