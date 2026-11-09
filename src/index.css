@@ -1,0 +1,62 @@
+:root {
+  --primary: #087e81;
+  --secondary: #10283b;
+  --accent: #8fe1d2;
+  --bg-light: #f5fff9;
+  --text-dark: #10283b;
+  --text-muted: #536677;
+  --white: #ffffff;
+  --card-bg: #ffffff;
+  --border-color: #e1ecec;
+
+  color: var(--text-dark);
+  background: var(--bg-light);
+  font-family: 'Open Sans', system-ui, -apple-system, sans-serif;
+  font-synthesis: none;
+  font-weight: 400;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+  scroll-padding-top: 84px;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background: var(--bg-light);
+}
+
+button,
+a {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+p {
+  margin: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--secondary);
+}
