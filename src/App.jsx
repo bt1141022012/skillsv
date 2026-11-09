@@ -321,7 +321,13 @@ function App() {
           >
             <ul className="primary-navigation">
               {navigation
-                .filter(([, href]) => href === '#cursos' || href === '#mis-cursos')
+                .filter(
+                  ([, href]) =>
+                    href === '#inicio' ||
+                    href === '#nosotros' ||
+                    href === '#como-funciona' ||
+                    href === '#cursos',
+                )
                 .map(([label, href]) => (
                   <li key={href}>
                     <a href={href} onClick={closeMenu}>
@@ -338,7 +344,11 @@ function App() {
               <ul>
                 {navigation
                   .filter(
-                    ([, href]) => href !== '#cursos' && href !== '#mis-cursos',
+                    ([, href]) =>
+                      href !== '#inicio' &&
+                      href !== '#nosotros' &&
+                      href !== '#como-funciona' &&
+                      href !== '#cursos',
                   )
                   .map(([label, href]) => (
                 <li key={href}>
