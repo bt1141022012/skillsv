@@ -395,10 +395,15 @@
 }
 
 .details-link {
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--primary);
+  font: inherit;
   font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .details-link:hover {
@@ -747,6 +752,105 @@
   text-align: right;
 }
 
+.course-details-dialog {
+  width: min(100%, 760px);
+}
+
+.course-details-dialog .cart-dialog-header h2 {
+  max-width: 620px;
+}
+
+.course-detail-content {
+  padding: 1.5rem 1.5rem 0;
+}
+
+.course-detail-description {
+  margin-bottom: 1.25rem;
+  color: var(--text-muted);
+}
+
+.course-detail-hours {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.65rem 0.9rem;
+  border-left: 4px solid var(--primary);
+  background: var(--bg-light);
+  color: var(--secondary);
+}
+
+.course-detail-hours strong {
+  font-size: 1.25rem;
+}
+
+.course-detail-note {
+  margin: 0.75rem 0 1.25rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.course-modules {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 2rem;
+}
+
+.course-module {
+  padding: 1rem 0;
+  border-top: 1px solid var(--border-color);
+}
+
+.course-module-number {
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.course-module h3 {
+  margin: 0.35rem 0 0.6rem;
+  color: var(--secondary);
+  font-size: 1rem;
+}
+
+.course-module ul {
+  margin: 0;
+  padding-left: 1.15rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.course-module li + li {
+  margin-top: 0.3rem;
+}
+
+.course-detail-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.course-detail-footer > div:first-child > strong {
+  display: block;
+  color: var(--secondary);
+  font-size: 1.1rem;
+}
+
+.course-detail-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.course-detail-message {
+  padding: 2rem 1.5rem;
+  color: var(--text-muted);
+}
+
 .steps-grid {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
 }
@@ -1009,6 +1113,28 @@
 
   .order-receipt div {
     align-items: flex-start;
+  }
+
+  .course-modules {
+    grid-template-columns: 1fr;
+  }
+
+  .course-detail-footer,
+  .course-detail-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .course-detail-footer {
+    padding: 1rem 1.25rem 1.25rem;
+  }
+
+  .course-detail-actions {
+    gap: 0.75rem;
+  }
+
+  .course-detail-actions .details-link {
+    align-self: flex-start;
   }
 
   .contact {

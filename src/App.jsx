@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import CartCheckout from './CartCheckout.jsx'
+import CourseDetails from './CourseDetails.jsx'
 import { formatPrice, readSavedValue, saveValue } from './commerce.js'
 import './App.css'
 
@@ -136,6 +137,7 @@ function App() {
   const [lastOrder, setLastOrder] = useState(() =>
     readSavedValue('skillsv:last-order', null),
   )
+  const [courseDetailState, setCourseDetailState] = useState(null)
 
   useEffect(() => {
     saveValue('skillsv:cart', cart)
@@ -159,6 +161,27 @@ function App() {
 
   function closeMenu() {
     setMenuOpen(false)
+  }
+
+  async function openCourseDetails(course) {
+    setCourseDetailState({ course, details: null, status: 'loading' })
+
+    try {
+      const { courseDetails } = await import('./data/courseDetails.js')
+      const details = courseDetails[course.id]
+
+      setCourseDetailState((currentState) =>
+        currentState?.course.id === course.id
+          ? { course, details, status: details ? 'ready' : 'missing' }
+          : currentState,
+      )
+    } catch {
+      setCourseDetailState((currentState) =>
+        currentState?.course.id === course.id
+          ? { course, details: null, status: 'error' }
+          : currentState,
+      )
+    }
   }
 
   function addToCart(courseId) {
@@ -370,14 +393,13 @@ function App() {
                       >
                         Agregar
                       </button>
-                      <a
+                      <button
                         className="details-link"
-                        href={course.url || '#contacto'}
-                        rel={course.url ? 'noreferrer' : undefined}
-                        target={course.url ? '_blank' : undefined}
+                        onClick={() => openCourseDetails(course)}
+                        type="button"
                       >
                         Ver detalle <span aria-hidden="true">→</span>
-                      </a>
+                      </button>
                     </div>
                 </div>
               </article>
@@ -484,6 +506,15 @@ function App() {
           onClose={() => setCartOpen(false)}
           onRemove={removeFromCart}
           total={cartTotal}
+        />
+      )}
+      {courseDetailState && (
+        <CourseDetails
+          course={courseDetailState.course}
+          details={courseDetailState.details}
+          onAddToCart={() => addToCart(courseDetailState.course.id)}
+          onClose={() => setCourseDetailState(null)}
+          status={courseDetailState.status}
         />
       )}
     </>
