@@ -61,13 +61,19 @@ function CourseDetails({ course, details, onAddToCart, onClose, status }) {
           <>
             <div className="course-detail-content">
               <p className="course-detail-description">{course.description}</p>
-              <div className="course-detail-hours">
-                <strong>{details.hours}</strong>
-                <span>horas estimadas</span>
+              <div className="course-detail-meta">
+                <div className="course-detail-hours">
+                  <strong>{details.hours}</strong>
+                  <span>horas estimadas</span>
+                </div>
+                <div className="course-detail-seats">
+                  <strong>{details.availableSeats}</strong>
+                  <span>cupos disponibles</span>
+                </div>
               </div>
               <p className="course-detail-note">
-                Temario y duración propuestos; pueden ajustarse según la
-                convocatoria.
+                Cupos de demostración. Confirma la disponibilidad real antes de
+                inscribirte.
               </p>
               <div className="course-modules">
                 {details.modules.map((module, index) => (

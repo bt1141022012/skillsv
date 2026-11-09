@@ -769,7 +769,14 @@
   color: var(--text-muted);
 }
 
-.course-detail-hours {
+.course-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.course-detail-hours,
+.course-detail-seats {
   display: inline-flex;
   align-items: baseline;
   gap: 0.5rem;
@@ -780,6 +787,11 @@
 }
 
 .course-detail-hours strong {
+  font-size: 1.25rem;
+}
+
+.course-detail-seats strong {
+  color: var(--primary);
   font-size: 1.25rem;
 }
 

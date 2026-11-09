@@ -1,6 +1,7 @@
 export const courseDetails = {
   'marketing-digital': {
     hours: 12,
+    availableSeats: 12,
     modules: [
       {
         title: 'Estrategia digital para emprender',
@@ -34,6 +35,7 @@ export const courseDetails = {
   },
   'diseno-grafico': {
     hours: 16,
+    availableSeats: 8,
     modules: [
       {
         title: 'Fundamentos de diseño visual',
@@ -67,6 +69,7 @@ export const courseDetails = {
   },
   'desarrollo-web': {
     hours: 30,
+    availableSeats: 15,
     modules: [
       {
         title: 'Estructura con HTML',
@@ -100,6 +103,7 @@ export const courseDetails = {
   },
   'office-basico': {
     hours: 12,
+    availableSeats: 20,
     modules: [
       {
         title: 'Documentos con Word',
@@ -133,6 +137,7 @@ export const courseDetails = {
   },
   'finanzas-personales': {
     hours: 10,
+    availableSeats: 10,
     modules: [
       {
         title: 'Organización de las finanzas personales',
@@ -166,6 +171,7 @@ export const courseDetails = {
   },
   'edicion-video': {
     hours: 15,
+    availableSeats: 12,
     modules: [
       {
         title: 'Idea y planificación del contenido',
