@@ -308,22 +308,53 @@ function App() {
       <header className="site-header">
         <div className="nav-container">
           <a className="logo" href="#inicio" onClick={closeMenu}>
-            Skill SV
+            <img
+              alt="Skill SV"
+              className="logo-image"
+              src={`${import.meta.env.BASE_URL}Logo.jpg`}
+            />
           </a>
           <nav
             aria-label="Navegación principal"
             className={`site-nav${menuOpen ? ' is-open' : ''}`}
             id="main-navigation"
           >
-            <ul>
-              {navigation.map(([label, href]) => (
+            <ul className="primary-navigation">
+              {navigation
+                .filter(([, href]) => href === '#cursos' || href === '#mis-cursos')
+                .map(([label, href]) => (
+                  <li key={href}>
+                    <a href={href} onClick={closeMenu}>
+                      {label}
+                    </a>
+                  </li>
+                ))}
+            </ul>
+            <details className="nav-more">
+              <summary>
+                Más
+                <span aria-hidden="true" className="nav-more-chevron" />
+              </summary>
+              <ul>
+                {navigation
+                  .filter(
+                    ([, href]) => href !== '#cursos' && href !== '#mis-cursos',
+                  )
+                  .map(([label, href]) => (
                 <li key={href}>
-                  <a href={href} onClick={closeMenu}>
+                  <a
+                    href={href}
+                    onClick={(event) => {
+                      event.currentTarget.closest('details').open = false
+                      closeMenu()
+                    }}
+                  >
                     {label}
                   </a>
                 </li>
-              ))}
-            </ul>
+                  ))}
+              </ul>
+            </details>
           </nav>
           <div className="nav-actions">
             <button
