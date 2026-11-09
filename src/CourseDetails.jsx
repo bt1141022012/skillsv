@@ -39,6 +39,13 @@ function CourseDetails({ course, details, onAddToCart, onClose, status }) {
           </button>
         </header>
 
+        <img
+          alt={course.imageAlt}
+          className="course-detail-image"
+          decoding="async"
+          src={course.image}
+        />
+
         {status === 'loading' && (
           <div aria-live="polite" className="course-detail-message">
             Cargando temario…

@@ -11,6 +11,9 @@ const courses = [
     title: 'Marketing Digital para Emprendedores',
     description:
       'Explora herramientas para comunicar mejor tu emprendimiento y dar coherencia a su presencia digital.',
+    image:
+      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=82',
+    imageAlt: 'Panel de analítica digital en una computadora portátil',
     price: 25,
   },
   {
@@ -19,6 +22,9 @@ const courses = [
     title: 'Taller Práctico de Diseño Gráfico con Canva y Photoshop',
     description:
       'Acércate a principios de diseño para crear comunicaciones visuales más claras y consistentes.',
+    image:
+      'https://images.unsplash.com/photo-1545235617-9465d2a55698?auto=format&fit=crop&w=900&q=82',
+    imageAlt: 'Espacio de trabajo creativo con herramientas de diseño',
     price: 20,
   },
   {
@@ -27,6 +33,9 @@ const courses = [
     title: 'Diplomado en Desarrollo Web Básico (HTML, CSS y JS)',
     description:
       'Descubre cómo se estructuran, presentan y enriquecen las interacciones de una página web sencilla.',
+    image:
+      'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=82',
+    imageAlt: 'Desarrollador trabajando en código desde una computadora',
     price: 45,
     url: 'https://bt1141022012.systeme.io/school/course/appmovilreact',
   },
@@ -36,6 +45,9 @@ const courses = [
     title: 'Curso Básico de Office',
     description:
       'Fortalece habilidades de organización y trabajo con herramientas de oficina para tareas cotidianas.',
+    image:
+      'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=82',
+    imageAlt: 'Espacio de oficina preparado para trabajar y colaborar',
     price: 20,
   },
   {
@@ -44,6 +56,9 @@ const courses = [
     title: 'Taller de Finanzas Personales y Contabilidad Básica',
     description:
       'Conoce conceptos iniciales para registrar y comprender mejor los movimientos de tus recursos.',
+    image:
+      'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=900&q=82',
+    imageAlt: 'Documentos y calculadora para organizar las finanzas',
     price: 18,
   },
   {
@@ -52,6 +67,9 @@ const courses = [
     title: 'Curso de Edición de Video y Creación de Contenido',
     description:
       'Explora una forma más ordenada de pensar, preparar y editar piezas audiovisuales básicas.',
+    image:
+      'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=900&q=82',
+    imageAlt: 'Equipo audiovisual para grabar y editar contenido',
     price: 22,
   },
 ]
@@ -376,6 +394,13 @@ function App() {
             {courses.map((course) => (
               <article className="course-card" key={course.title}>
                 <div>
+                  <img
+                    alt={course.imageAlt}
+                    className="course-card-image"
+                    decoding="async"
+                    loading="lazy"
+                    src={course.image}
+                  />
                   <span className="course-tag">{course.category}</span>
                   <h3>{course.title}</h3>
                   <p className="course-pitch">{course.description}</p>
