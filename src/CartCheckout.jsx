@@ -3,16 +3,17 @@ import { formatPrice } from './commerce.js'
 
 function CartCheckout({
   items,
+  isAuthenticated,
   lastOrder,
   onChangeQuantity,
   onCheckout,
   onClose,
+  onRequestAuth,
   onRemove,
   total,
+  user,
 }) {
   const [step, setStep] = useState('cart')
-  const [customerName, setCustomerName] = useState('')
-  const [customerEmail, setCustomerEmail] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('Tarjeta simulada')
   const [completedOrder, setCompletedOrder] = useState(null)
 
@@ -33,9 +34,14 @@ function CartCheckout({
 
   function submitCheckout(event) {
     event.preventDefault()
+    if (!isAuthenticated) {
+      onRequestAuth()
+      return
+    }
+
     const order = onCheckout({
-      customerName: customerName.trim(),
-      customerEmail: customerEmail.trim(),
+      customerName: user.name,
+      customerEmail: user.email,
       paymentMethod,
     })
     setCompletedOrder(order)
@@ -148,9 +154,22 @@ function CartCheckout({
                 <p className="simulation-note">
                   Simulación de compra. No se realizará un cargo real.
                 </p>
+                {!isAuthenticated && (
+                  <div className="auth-required" role="status">
+                    <p>Inicia sesión o crea tu cuenta de alumno para pagar.</p>
+                    <button
+                      className="account-trigger"
+                      onClick={onRequestAuth}
+                      type="button"
+                    >
+                      Iniciar sesión / registrarme
+                    </button>
+                  </div>
+                )}
                 <button
                   className="btn checkout-button"
                   onClick={() => setStep('checkout')}
+                  disabled={!isAuthenticated}
                   type="button"
                 >
                   Continuar al pago
@@ -160,7 +179,7 @@ function CartCheckout({
           </div>
         )}
 
-        {step === 'checkout' && (
+        {step === 'checkout' && isAuthenticated && (
           <form className="checkout-form" onSubmit={submitCheckout}>
             <button
               className="back-to-cart"
@@ -177,19 +196,19 @@ function CartCheckout({
               <span>Nombre completo</span>
               <input
                 autoComplete="name"
-                onChange={(event) => setCustomerName(event.target.value)}
+                readOnly
                 required
-                value={customerName}
+                value={user?.name || ''}
               />
             </label>
             <label className="form-field">
               <span>Correo electrónico</span>
               <input
                 autoComplete="email"
-                onChange={(event) => setCustomerEmail(event.target.value)}
+                readOnly
                 required
                 type="email"
-                value={customerEmail}
+                value={user?.email || ''}
               />
             </label>
             <fieldset className="payment-methods">
@@ -212,6 +231,19 @@ function CartCheckout({
               Simular cobro por {formatPrice(total)}
             </button>
           </form>
+        )}
+
+        {step === 'checkout' && !isAuthenticated && (
+          <div className="cart-dialog-content auth-required" role="alert">
+            <p>Necesitas una sesión de alumno para continuar al pago.</p>
+            <button
+              className="account-trigger"
+              onClick={onRequestAuth}
+              type="button"
+            >
+              Iniciar sesión / registrarme
+            </button>
+          </div>
         )}
 
         {step === 'success' && completedOrder && (

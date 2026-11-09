@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
+import AuthPage from './AuthPage.jsx'
 import CartCheckout from './CartCheckout.jsx'
 import CourseDetails from './CourseDetails.jsx'
+import { logoutStudent, readCurrentUser } from './auth.js'
 import { formatPrice, readSavedValue, saveValue } from './commerce.js'
 import './App.css'
 
@@ -148,6 +150,8 @@ const navigation = [
 function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [cartOpen, setCartOpen] = useState(false)
+  const [authOpen, setAuthOpen] = useState(false)
+  const [authUser, setAuthUser] = useState(() => readCurrentUser())
   const [cart, setCart] = useState(() => {
     const savedCart = readSavedValue('skillsv:cart', [])
     return Array.isArray(savedCart) ? savedCart : []
@@ -179,6 +183,11 @@ function App() {
 
   function closeMenu() {
     setMenuOpen(false)
+  }
+
+  function handleLogout() {
+    logoutStudent()
+    setAuthUser(null)
   }
 
   async function openCourseDetails(course) {
@@ -236,12 +245,15 @@ function App() {
     )
   }
 
-  function completeCheckout({ customerName, customerEmail, paymentMethod }) {
+  function completeCheckout({ paymentMethod }) {
+    if (!authUser) return null
+
     const order = {
       id: `SK-${Date.now().toString(36).toUpperCase()}`,
       createdAt: new Date().toISOString(),
-      customerName,
-      customerEmail,
+      studentId: authUser.id,
+      customerName: authUser.name,
+      customerEmail: authUser.email,
       paymentMethod,
       status: 'Pago simulado',
       items: cartItems.map(({ course, quantity }) => ({
@@ -310,6 +322,28 @@ function App() {
                 {cartCount}
               </span>
             </button>
+            {authUser ? (
+              <>
+                <span className="account-name" title={authUser.email}>
+                  {authUser.name}
+                </span>
+                <button
+                  className="account-trigger"
+                  onClick={handleLogout}
+                  type="button"
+                >
+                  Salir
+                </button>
+              </>
+            ) : (
+              <button
+                className="account-trigger"
+                onClick={() => setAuthOpen(true)}
+                type="button"
+              >
+                Ingresar
+              </button>
+            )}
             <button
               aria-controls="main-navigation"
               aria-expanded={menuOpen}
@@ -524,13 +558,25 @@ function App() {
       </footer>
       {cartOpen && (
         <CartCheckout
+          isAuthenticated={Boolean(authUser)}
           items={cartItems}
           lastOrder={lastOrder}
           onChangeQuantity={changeQuantity}
           onCheckout={completeCheckout}
           onClose={() => setCartOpen(false)}
+          onRequestAuth={() => setAuthOpen(true)}
           onRemove={removeFromCart}
           total={cartTotal}
+          user={authUser}
+        />
+      )}
+      {authOpen && (
+        <AuthPage
+          onAuthenticated={(user) => {
+            setAuthUser(user)
+            setAuthOpen(false)
+          }}
+          onClose={() => setAuthOpen(false)}
         />
       )}
       {courseDetailState && (
