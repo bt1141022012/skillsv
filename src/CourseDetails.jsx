@@ -1,7 +1,14 @@
 import { useEffect } from 'react'
 import { formatPrice } from './commerce.js'
 
-function CourseDetails({ course, details, onAddToCart, onClose, status }) {
+function CourseDetails({
+  course,
+  details,
+  isPurchased,
+  onAddToCart,
+  onClose,
+  status,
+}) {
   useEffect(() => {
     function closeOnEscape(event) {
       if (event.key === 'Escape') onClose()
@@ -114,16 +121,18 @@ function CourseDetails({ course, details, onAddToCart, onClose, status }) {
                     Sitio del curso <span aria-hidden="true">↗</span>
                   </a>
                 )}
-                <button
-                  className="btn"
-                  onClick={() => {
-                    onAddToCart()
-                    onClose()
-                  }}
-                  type="button"
-                >
-                  Agregar al carrito
-                </button>
+                {!isPurchased && (
+                  <button
+                    className="btn"
+                    onClick={() => {
+                      onAddToCart()
+                      onClose()
+                    }}
+                    type="button"
+                  >
+                    Agregar al carrito
+                  </button>
+                )}
               </div>
             </footer>
           </>
