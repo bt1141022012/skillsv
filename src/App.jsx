@@ -682,9 +682,18 @@ function App() {
                 <a href="https://wa.me/50361177455">6117-7455</a>
               </p>
             </div>
-            <div className="contact-item">
-              <h3>Facebook</h3>
-              <p>Skill SV</p>
+            <div className="contact-item facebook-item">
+              <a
+                aria-label="Visita Skill SV en Facebook"
+                className="facebook-link"
+                href="https://www.facebook.com/share/1PGsUpbFca/"
+                rel="noreferrer"
+                target="_blank"
+              >
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <path d="M13.5 21v-8.2h2.8l.4-3.2h-3.2V7.5c0-.9.3-1.5 1.6-1.5h1.7V3.1c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7.3v3.2h2.8V21h3.4Z" />
+                </svg>
+              </a>
             </div>
           </div>
         </section>
@@ -697,17 +706,6 @@ function App() {
           La información de cursos, precios y condiciones está sujeta a
           confirmación antes de inscribirse.
         </p>
-        <a
-          aria-label="Visita Skill SV en Facebook"
-          className="facebook-link"
-          href="https://www.facebook.com/share/1PGsUpbFca/"
-          rel="noreferrer"
-          target="_blank"
-        >
-          <svg aria-hidden="true" viewBox="0 0 24 24">
-            <path d="M13.5 21v-8.2h2.8l.4-3.2h-3.2V7.5c0-.9.3-1.5 1.6-1.5h1.7V3.1c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7.3v3.2h2.8V21h3.4Z" />
-          </svg>
-        </a>
       </footer>
       {cartOpen && (
         <CartCheckout

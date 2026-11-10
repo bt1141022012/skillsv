@@ -1295,6 +1295,16 @@
   text-decoration: underline;
 }
 
+.facebook-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.facebook-item .facebook-link {
+  margin-top: 0;
+}
+
 .site-footer {
   padding: 3rem 2rem;
   background: var(--secondary);
