@@ -92,7 +92,7 @@ function AuthPage({ onAuthenticated, onClose }) {
           <p className="auth-intro">
             {isRegistering
               ? 'Crea tu perfil de alumno para continuar con tu inscripción.'
-              : 'Ingresa con la cuenta de alumno guardada en este navegador.'}
+              : 'Ingresa con la cuenta de alumno.'}
           </p>
 
           <form className="auth-form" onSubmit={submitForm}>
@@ -148,10 +148,7 @@ function AuthPage({ onAuthenticated, onClose }) {
               </p>
             )}
 
-            <p className="auth-storage-note">
-              Cuenta de demostración guardada en este navegador. No uses una
-              contraseña que utilices en otros servicios.
-            </p>
+           
 
             <button
               className="btn auth-submit"
