@@ -206,8 +206,13 @@ function App() {
     setAuthUser(null)
   }
 
-  async function openCourseDetails(course) {
-    setCourseDetailState({ course, details: null, status: 'loading' })
+  async function openCourseDetails(course, isPurchased = false) {
+    setCourseDetailState({
+      course,
+      details: null,
+      isPurchased,
+      status: 'loading',
+    })
 
     try {
       const { courseDetails } = await import('./data/courseDetails.js')
@@ -215,13 +220,18 @@ function App() {
 
       setCourseDetailState((currentState) =>
         currentState?.course.id === course.id
-          ? { course, details, status: details ? 'ready' : 'missing' }
+          ? {
+              course,
+              details,
+              isPurchased,
+              status: details ? 'ready' : 'missing',
+            }
           : currentState,
       )
     } catch {
       setCourseDetailState((currentState) =>
         currentState?.course.id === course.id
-          ? { course, details: null, status: 'error' }
+          ? { course, details: null, isPurchased, status: 'error' }
           : currentState,
       )
     }
@@ -272,7 +282,7 @@ function App() {
       customerName: authUser.name,
       customerEmail: authUser.email,
       paymentMethod,
-      status: 'Pago simulado',
+      status: 'Pago realizado',
       items: cartItems.map(({ course, quantity }) => ({
         courseId: course.id,
         title: course.title,
@@ -614,7 +624,7 @@ function App() {
                       </span>
                       <button
                         className="details-link"
-                        onClick={() => openCourseDetails(course)}
+                        onClick={() => openCourseDetails(course, true)}
                         type="button"
                       >
                         Ver temario <span aria-hidden="true">→</span>
@@ -734,6 +744,7 @@ function App() {
         <CourseDetails
           course={courseDetailState.course}
           details={courseDetailState.details}
+          isPurchased={courseDetailState.isPurchased}
           onAddToCart={() => addToCart(courseDetailState.course.id)}
           onClose={() => setCourseDetailState(null)}
           status={courseDetailState.status}

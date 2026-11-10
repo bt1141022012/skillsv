@@ -14,15 +14,16 @@ function CartCheckout({
   user,
 }) {
   const [step, setStep] = useState('cart')
-  const [paymentMethod, setPaymentMethod] = useState('Tarjeta simulada')
   const [completedOrder, setCompletedOrder] = useState(null)
+  const [cardNumber, setCardNumber] = useState('')
+  const [isProcessing, setIsProcessing] = useState(false)
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
 
     function closeOnEscape(event) {
-      if (event.key === 'Escape') onClose()
+      if (event.key === 'Escape' && !isProcessing) onClose()
     }
 
     window.addEventListener('keydown', closeOnEscape)
@@ -30,35 +31,47 @@ function CartCheckout({
       document.body.style.overflow = previousOverflow
       window.removeEventListener('keydown', closeOnEscape)
     }
-  }, [onClose])
+  }, [isProcessing, onClose])
 
-  function submitCheckout(event) {
+  async function submitCheckout(event) {
     event.preventDefault()
     if (!isAuthenticated) {
       onRequestAuth()
       return
     }
 
+    setIsProcessing(true)
+    setCardNumber('')
+    await new Promise((resolve) => window.setTimeout(resolve, 2500))
+
     const order = onCheckout({
       customerName: user.name,
       customerEmail: user.email,
-      paymentMethod,
+      paymentMethod: 'Tarjeta de crédito',
     })
     setCompletedOrder(order)
     setStep('success')
   }
 
+  function formatCardNumber(value) {
+    return value
+      .replace(/\D/g, '')
+      .slice(0, 19)
+      .replace(/(.{4})/g, '$1 ')
+      .trim()
+  }
+
   const title = {
     cart: 'Tu carrito',
     checkout: 'Finaliza tu pedido',
-    success: 'Pedido confirmado',
+    success: 'Pago realizado',
   }[step]
 
   return (
     <div
       className="cart-overlay"
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose()
+        if (event.target === event.currentTarget && !isProcessing) onClose()
       }}
     >
       <section
@@ -69,13 +82,13 @@ function CartCheckout({
       >
         <header className="cart-dialog-header">
           <div>
-            <span className="kicker">Skill SV</span>
             <h2 id="cart-dialog-title">{title}</h2>
           </div>
           <button
             aria-label="Cerrar carrito"
             className="cart-close"
             onClick={onClose}
+            disabled={isProcessing}
             type="button"
           >
             <span aria-hidden="true">×</span>
@@ -151,9 +164,6 @@ function CartCheckout({
                   <span>Total estimado</span>
                   <strong>{formatPrice(total)}</strong>
                 </div>
-                <p className="simulation-note">
-                  Simulación de compra. No se realizará un cargo real.
-                </p>
                 {!isAuthenticated && (
                   <div className="auth-required" role="status">
                     <p>Inicia sesión o crea tu cuenta de alumno para pagar.</p>
@@ -180,11 +190,16 @@ function CartCheckout({
         )}
 
         {step === 'checkout' && isAuthenticated && (
-          <form className="checkout-form" onSubmit={submitCheckout}>
+          <form
+            aria-busy={isProcessing}
+            className="checkout-form"
+            onSubmit={submitCheckout}
+          >
             <button
               className="back-to-cart"
               onClick={() => setStep('cart')}
               type="button"
+              disabled={isProcessing}
             >
               ← Volver al carrito
             </button>
@@ -192,44 +207,92 @@ function CartCheckout({
               <span>{items.length} {items.length === 1 ? 'curso' : 'cursos'}</span>
               <strong>{formatPrice(total)}</strong>
             </div>
-            <label className="form-field">
-              <span>Nombre completo</span>
-              <input
-                autoComplete="name"
-                readOnly
-                required
-                value={user?.name || ''}
-              />
-            </label>
-            <label className="form-field">
-              <span>Correo electrónico</span>
-              <input
-                autoComplete="email"
-                readOnly
-                required
-                type="email"
-                value={user?.email || ''}
-              />
-            </label>
-            <fieldset className="payment-methods">
-              <legend>Método de pago (simulación)</legend>
-              {['Tarjeta simulada', 'Transferencia simulada'].map((method) => (
-                <label className="payment-option" key={method}>
+            {isProcessing ? (
+              <div aria-live="polite" className="payment-processing" role="status">
+                <span aria-hidden="true" className="payment-spinner" />
+                <span>Procesando pago...</span>
+              </div>
+            ) : (
+              <>
+                <label className="form-field">
+                  <span>Nombre completo</span>
                   <input
-                    checked={paymentMethod === method}
-                    name="payment-method"
-                    onChange={() => setPaymentMethod(method)}
-                    type="radio"
-                    value={method}
+                    autoComplete="name"
+                    readOnly
+                    required
+                    value={user?.name || ''}
                   />
-                  <span>{method}</span>
                 </label>
-              ))}
-              <p>No ingreses datos bancarios ni de tarjeta reales.</p>
-            </fieldset>
-            <button className="btn checkout-button" type="submit">
-              Simular cobro por {formatPrice(total)}
-            </button>
+                <label className="form-field">
+                  <span>Correo electrónico</span>
+                  <input
+                    autoComplete="email"
+                    readOnly
+                    required
+                    type="email"
+                    value={user?.email || ''}
+                  />
+                </label>
+                <fieldset className="payment-methods">
+                  <legend>Datos de la tarjeta de crédito</legend>
+                  <label className="form-field">
+                    <span>Nombre en la tarjeta</span>
+                    <input
+                      autoComplete="cc-name"
+                      maxLength={80}
+                      name="cardholder"
+                      required
+                    />
+                  </label>
+                  <label className="form-field">
+                    <span>Número de tarjeta</span>
+                    <input
+                      autoComplete="cc-number"
+                      inputMode="numeric"
+                      maxLength={23}
+                      name="card-number"
+                      onChange={(event) =>
+                        setCardNumber(formatCardNumber(event.target.value))
+                      }
+                      pattern="[0-9]{4} [0-9]{4} [0-9]{4} [0-9]{1,4}|[0-9]{4} [0-9]{4} [0-9]{4} [0-9]{4} [0-9]{1,3}"
+                      placeholder="0000 0000 0000 0000"
+                      required
+                      type="text"
+                      value={cardNumber}
+                    />
+                  </label>
+                  <div className="card-fields-row">
+                    <label className="form-field">
+                      <span>Vencimiento</span>
+                      <input
+                        autoComplete="cc-exp"
+                        min={new Date().toISOString().slice(0, 7)}
+                        name="card-expiration"
+                        required
+                        type="month"
+                      />
+                    </label>
+                    <label className="form-field">
+                      <span>Código de seguridad</span>
+                      <input
+                        autoComplete="cc-csc"
+                        inputMode="numeric"
+                        maxLength={4}
+                        minLength={3}
+                        name="card-security-code"
+                        pattern="[0-9]{3,4}"
+                        placeholder="CVV"
+                        required
+                        type="password"
+                      />
+                    </label>
+                  </div>
+                </fieldset>
+                <button className="btn checkout-button" type="submit">
+                  Pagar {formatPrice(total)}
+                </button>
+              </>
+            )}
           </form>
         )}
 
@@ -251,11 +314,7 @@ function CartCheckout({
             <span aria-hidden="true" className="success-mark">
               ✓
             </span>
-            <h3>Pago simulado exitosamente</h3>
-            <p>
-              No se realizó ningún cargo real. El pedido quedó guardado en este
-              navegador.
-            </p>
+            <h3>Pago realizado</h3>
             <dl className="order-receipt">
               <div>
                 <dt>Número de pedido</dt>
@@ -266,8 +325,12 @@ function CartCheckout({
                 <dd>{completedOrder.customerEmail}</dd>
               </div>
               <div>
-                <dt>Método</dt>
+                <dt>Método de pago</dt>
                 <dd>{completedOrder.paymentMethod}</dd>
+              </div>
+              <div>
+                <dt>Estado</dt>
+                <dd>{completedOrder.status}</dd>
               </div>
               <div>
                 <dt>Total</dt>
