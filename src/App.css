@@ -1314,6 +1314,36 @@
   font-size: 0.9rem;
 }
 
+.facebook-link {
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.25rem;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  color: var(--white);
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.facebook-link:hover,
+.facebook-link:focus-visible {
+  background: var(--white);
+  color: var(--secondary);
+}
+
+.facebook-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.facebook-link svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: currentColor;
+}
+
 @keyframes rise-in {
   from {
     opacity: 0;
