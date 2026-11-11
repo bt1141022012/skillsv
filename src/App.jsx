@@ -689,7 +689,7 @@ function App() {
             <div className="contact-item">
               <h3>WhatsApp</h3>
               <p>
-                <a href="https://wa.me/50361177455">6117-7455</a>
+                <a href="https://wa.me/50361777449">6177-7449</a>
               </p>
             </div>
             <div className="contact-item facebook-item">
